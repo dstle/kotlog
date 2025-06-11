@@ -1,28 +1,25 @@
-package com.study.kotlog.tag
+package com.study.kotlog.domain
 
 import jakarta.persistence.Column
-import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.MappedSuperclass
 import java.time.ZonedDateTime
 
-@Entity
-@Table(name = "tags")
-class Tag(
+@MappedSuperclass
+abstract class BaseEntity {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-
-    @Column(name = "name", nullable = false)
-    val name: String,
+    private val _id: Long? = null
+    val id: Long
+        get() = _id!!
 
     @Column(name = "created_at", nullable = false)
-    val createdAt: ZonedDateTime,
+    var createdAt: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "updated_at", nullable = false)
-    val updatedAt: ZonedDateTime
-)
-
+    var updatedAt: ZonedDateTime = ZonedDateTime.now()
+}
