@@ -8,16 +8,12 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "users")
 class User(
-
     @Column(name = "user_name", nullable = false)
     val username: String,
-
     @Column(name = "password", nullable = false)
     var password: String,
-
     @Column(name = "email", nullable = false)
     var email: String,
-
     @Column(name = "nickname", nullable = false)
-    var nickname: String
+    var nickname: String,
 ) : BaseEntity()

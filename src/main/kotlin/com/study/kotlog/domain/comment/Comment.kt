@@ -8,13 +8,10 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "comments")
 class Comment(
-
     @Column(name = "post_id", nullable = false)
     val postId: Long,
-
     @Column(name = "author_id", nullable = false)
     val authorId: Long,
-
     @Column(name = "content", nullable = false)
-    val content: String
+    val content: String,
 ) : BaseEntity()
