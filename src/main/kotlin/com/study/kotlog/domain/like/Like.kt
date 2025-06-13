@@ -8,10 +8,8 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "likes")
 class Like(
-
     @Column(name = "post_id", nullable = false)
     val postId: Long,
-
     @Column(name = "user_id", nullable = false)
-    val userId: Long
+    val userId: Long,
 ) : BaseEntity()
