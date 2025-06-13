@@ -16,4 +16,6 @@ class User(
     var email: String,
     @Column(name = "nickname", nullable = false)
     var nickname: String,
-) : BaseEntity()
+) : BaseEntity() {
+    override fun toString(): String = "User(id = '$id', createdAt = '$createdAt', updatedAt = '$updatedAt', username='$username', password='$password', email='$email', nickname='$nickname')"
+}
