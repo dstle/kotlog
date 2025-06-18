@@ -1,10 +1,7 @@
 package com.study.kotlog.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.MappedSuperclass
+import com.study.kotlog.util.ZonedDateTimeConverter
+import jakarta.persistence.*
 import java.time.ZonedDateTime
 
 @MappedSuperclass
@@ -16,9 +13,16 @@ abstract class BaseEntity {
     val id: Long
         get() = _id!!
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Convert(converter = ZonedDateTimeConverter::class)
     var createdAt: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "updated_at", nullable = false)
+    @Convert(converter = ZonedDateTimeConverter::class)
     var updatedAt: ZonedDateTime = ZonedDateTime.now()
+
+    @PreUpdate
+    fun onPreUpdate() {
+        updatedAt = ZonedDateTime.now()
+    }
 }
