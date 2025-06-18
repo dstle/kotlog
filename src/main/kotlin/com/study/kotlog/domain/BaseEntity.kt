@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.MappedSuperclass
+import jakarta.persistence.PreUpdate
 import java.time.ZonedDateTime
 
 @MappedSuperclass
@@ -16,9 +17,14 @@ abstract class BaseEntity {
     val id: Long
         get() = _id!!
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: ZonedDateTime = ZonedDateTime.now()
 
     @Column(name = "updated_at", nullable = false)
     var updatedAt: ZonedDateTime = ZonedDateTime.now()
+
+    @PreUpdate
+    fun onPreUpdate() {
+        updatedAt = ZonedDateTime.now()
+    }
 }
