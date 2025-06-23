@@ -1,0 +1,51 @@
+package com.study.kotlog.util
+
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import org.springframework.boot.test.context.SpringBootTest
+import kotlin.math.absoluteValue
+import kotlin.random.Random
+
+@SpringBootTest
+class JwtUtilTest(
+    val jwtUtil: JwtUtil,
+) : FunSpec({
+
+    context("토큰 생성 및 추출") {
+        test("성공") {
+            val userId = Random.nextLong().absoluteValue
+            val token = jwtUtil.generateToken(userId)
+
+            jwtUtil.validateToken(token) shouldBe true
+            jwtUtil.extractUserId(token) shouldBe userId
+        }
+
+        test("validate token 실패 : 잘못된 token") {
+            jwtUtil.validateToken("invalid") shouldBe false
+        }
+
+        test("validate token 실패 : 기간 만료") {
+            val userId = Random.nextLong().absoluteValue
+            val token = jwtUtil.generateToken(userId, -1000L)
+
+            jwtUtil.validateToken(token) shouldBe false
+        }
+
+        test("extract token 비교") {
+            val userId1 = Random.nextLong().absoluteValue
+            val token1 = jwtUtil.generateToken(userId1)
+            jwtUtil.validateToken(token1) shouldBe true
+            val extractUserId1 = jwtUtil.extractUserId(token1)
+
+            val userId2 = Random.nextLong().absoluteValue
+            val token2 = jwtUtil.generateToken(userId2)
+            jwtUtil.validateToken(token2) shouldBe true
+            val extractUserId2 = jwtUtil.extractUserId(token2)
+
+            extractUserId1 shouldBe userId1
+            extractUserId2 shouldBe userId2
+            extractUserId1 shouldNotBe extractUserId2
+        }
+    }
+})
