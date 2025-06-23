@@ -1,7 +1,5 @@
-package com.study.kotlog
+package com.study.kotlog.domain.user
 
-import com.study.kotlog.domain.user.User
-import com.study.kotlog.domain.user.UserRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
