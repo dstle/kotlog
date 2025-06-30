@@ -1,7 +1,7 @@
-package com.study.kotlog.front.controller
+package com.study.kotlog.front.controller.user
 
 import com.study.kotlog.domain.user.UserRepository
-import com.study.kotlog.front.controller.dto.UserResponse
+import com.study.kotlog.front.controller.user.dto.UserResponse
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,7 +19,6 @@ class UserController(
     fun me(userId: Long): ResponseEntity<UserResponse> {
         val user = userRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("유저를 찾을 수 없습니다. id=$userId") }
-
         return ResponseEntity.ok(UserResponse.from(user))
     }
 }

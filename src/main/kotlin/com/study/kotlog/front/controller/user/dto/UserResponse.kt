@@ -1,4 +1,4 @@
-package com.study.kotlog.front.controller.dto
+package com.study.kotlog.front.controller.user.dto
 
 import com.study.kotlog.domain.user.User
 import io.swagger.v3.oas.annotations.media.Schema

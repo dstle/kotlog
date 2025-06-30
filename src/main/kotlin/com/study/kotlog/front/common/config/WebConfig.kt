@@ -16,6 +16,10 @@ class WebConfig(
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(authInterceptor)
             .addPathPatterns("/api/**")
+            .excludePathPatterns(
+                "/api/v1/auth/signup",
+                "/api/v1/auth/login"
+            )
     }
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {

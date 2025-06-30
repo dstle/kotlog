@@ -1,5 +1,7 @@
-package com.study.kotlog.domain.user
+package com.study.kotlog.front.controller.user
 
+import com.study.kotlog.domain.user.User
+import com.study.kotlog.domain.user.UserRepository
 import com.study.kotlog.util.JwtUtil
 import io.kotest.core.spec.style.FunSpec
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -17,8 +19,8 @@ class UserControllerTest(
 
     test("GET /api/v1/users/me 요청이 들어왔을 때 200 OK 반환해야 함") {
         val user = User(
-            username = "dustle",
-            password = "111",
+            username = "dustle15",
+            password = "1111111111111",
             email = "111",
             nickname = "111"
         ).also {
