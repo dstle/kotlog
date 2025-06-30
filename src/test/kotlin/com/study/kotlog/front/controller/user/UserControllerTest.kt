@@ -1,5 +1,7 @@
-package com.study.kotlog.domain.user
+package com.study.kotlog.front.controller.user
 
+import com.study.kotlog.domain.user.User
+import com.study.kotlog.domain.user.UserRepository
 import com.study.kotlog.util.JwtUtil
 import io.kotest.core.spec.style.FunSpec
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
