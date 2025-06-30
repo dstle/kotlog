@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 class UserController(
     val userRepository: UserRepository,
 ) {
@@ -19,7 +19,6 @@ class UserController(
     fun me(userId: Long): ResponseEntity<UserResponse> {
         val user = userRepository.findById(userId)
             .orElseThrow { IllegalArgumentException("유저를 찾을 수 없습니다. id=$userId") }
-
-        return ResponseEntity.ok(UserResponse.Companion.from(user))
+        return ResponseEntity.ok(UserResponse.from(user))
     }
 }

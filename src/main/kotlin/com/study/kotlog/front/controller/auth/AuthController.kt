@@ -17,7 +17,7 @@ class AuthController(
 
     @PostMapping("/signup")
     fun signUp(@RequestBody request: SignupRequest): ResponseEntity<Void> {
-        authService.signUp(request)
+        authService.signUp(request.toCommand())
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }

@@ -1,5 +1,6 @@
 package com.study.kotlog.front.controller.auth
 
+import com.study.kotlog.domain.user.UserRepository
 import com.study.kotlog.front.controller.auth.dto.SignupRequest
 import io.kotest.core.spec.style.FunSpec
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -11,11 +12,16 @@ import org.springframework.test.web.servlet.post
 @AutoConfigureMockMvc
 class AuthControllerTest(
     val mockMvc: MockMvc,
+    val userRepository: UserRepository,
 ) : FunSpec({
+
+    afterTest {
+        userRepository.deleteAll()
+    }
 
     test("POST /api/v1/auth/signup 요청이 들어왔을 때 200 OK") {
         val signupRequest = SignupRequest(
-            username = "dustle",
+            username = "dustle13",
             password = "securePass123!",
             email = "dustle@example.com",
             nickname = "Dustle"
