@@ -14,7 +14,7 @@ class JwtUtil {
 
     fun generateToken(
         userId: Long,
-        expirationMs: Long = ONE_HOURS_MS,
+        expirationMs: Long,
     ): String {
         val now = Date()
         return Jwts.builder()
@@ -45,8 +45,27 @@ class JwtUtil {
         return claims.subject.toLong()
     }
 
+    fun extractExpiration(token: String): Long {
+        val claims = Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .payload
+
+        return claims.expiration.time
+    }
+
+    fun extractIssuedAt(token: String): Long {
+        val claims = Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .payload
+
+        return claims.issuedAt.time
+    }
+
     companion object {
-        private const val ONE_HOURS_MS = 60 * 60 * 1000L
         private val LOG = LoggerFactory.getLogger(this::class.java)
     }
 }
