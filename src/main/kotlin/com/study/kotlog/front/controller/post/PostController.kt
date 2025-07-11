@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class PostController(
     private val postService: PostService,
 ) {
-
-    @PostMapping("/create")
+    @PostMapping
     @Operation(summary = "post 생성", description = "현재 userId 로 게시물을 생성합니다.")
     fun createPost(
         userId: Long,

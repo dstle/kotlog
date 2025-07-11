@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
 ) {
-
     @PostMapping("/signup")
     @Operation(summary = "회원 가입", description = "사용자로부터 회원 정보를 입력받아 계정을 생성합니다. 중복된 사용자명은 가입할 수 없습니다.")
     fun signUp(@RequestBody request: SignupRequest): ResponseEntity<Void> {
