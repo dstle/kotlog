@@ -27,7 +27,7 @@ class UserControllerTest(
             userRepository.saveAndFlush(it)
         }
 
-        val token = jwtUtil.generateToken(user.id)
+        val token = jwtUtil.generateToken(user.id, 60 * 1000L)
 
         mockMvc.get("/api/v1/users/me") {
             header("Authorization", "Bearer $token")

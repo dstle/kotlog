@@ -15,7 +15,7 @@ class JwtUtilTest(
     context("토큰 생성 및 추출") {
         test("성공") {
             val userId = Random.nextLong().absoluteValue
-            val token = jwtUtil.generateToken(userId)
+            val token = jwtUtil.generateToken(userId, 1000L)
 
             jwtUtil.validateToken(token) shouldBe true
             jwtUtil.extractUserId(token) shouldBe userId
@@ -32,14 +32,25 @@ class JwtUtilTest(
             jwtUtil.validateToken(token) shouldBe false
         }
 
+        test("만료 시간 확인") {
+            val userId = Random.nextLong().absoluteValue
+            val token = jwtUtil.generateToken(userId, 1000L)
+
+            val extractExpiration = jwtUtil.extractExpiration(token)
+            val extractIssuedAt = jwtUtil.extractIssuedAt(token)
+
+            val diff = extractExpiration - extractIssuedAt
+            diff shouldBe 1000L
+        }
+
         test("extract token 비교") {
             val userId1 = Random.nextLong().absoluteValue
-            val token1 = jwtUtil.generateToken(userId1)
+            val token1 = jwtUtil.generateToken(userId1, 1000L)
             jwtUtil.validateToken(token1) shouldBe true
             val extractUserId1 = jwtUtil.extractUserId(token1)
 
             val userId2 = Random.nextLong().absoluteValue
-            val token2 = jwtUtil.generateToken(userId2)
+            val token2 = jwtUtil.generateToken(userId2, 1000L)
             jwtUtil.validateToken(token2) shouldBe true
             val extractUserId2 = jwtUtil.extractUserId(token2)
 

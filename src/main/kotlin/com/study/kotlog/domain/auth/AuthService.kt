@@ -1,6 +1,9 @@
 package com.study.kotlog.domain.auth
 
+import com.study.kotlog.domain.auth.dto.LoginCommand
+import com.study.kotlog.domain.auth.dto.LoginResult
 import com.study.kotlog.domain.auth.dto.SignupCommand
+import com.study.kotlog.domain.token.TokenService
 import com.study.kotlog.domain.user.User
 import com.study.kotlog.domain.user.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -10,11 +13,11 @@ import org.springframework.stereotype.Service
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val tokenService: TokenService,
 ) {
-
     fun signUp(signupCommand: SignupCommand) {
-        validateDuplicateUsername(signupCommand)
-        validatePasswordPolicy(signupCommand)
+        validateDuplicateUsername(signupCommand.username)
+        validatePasswordPolicy(signupCommand.password)
 
         val encodedPassword = passwordEncoder.encode(signupCommand.password)
 
@@ -28,15 +31,40 @@ class AuthService(
         userRepository.save(user)
     }
 
-    private fun validateDuplicateUsername(signupCommand: SignupCommand) {
-        if (userRepository.existsByUsername(signupCommand.username)) {
+    private fun validateDuplicateUsername(username: String) {
+        if (userRepository.existsByUsername(username)) {
             throw IllegalArgumentException("Username already exists")
         }
     }
 
-    private fun validatePasswordPolicy(signupCommand: SignupCommand) {
-        if (signupCommand.password.length < 10) {
+    private fun validatePasswordPolicy(password: String) {
+        if (password.length < 10) {
             throw IllegalArgumentException("Password must be at least 10 characters long")
+        }
+    }
+
+    fun login(loginCommand: LoginCommand): LoginResult {
+        val user = userRepository.findByUsername(loginCommand.username)
+            ?: throw IllegalArgumentException("Username not found")
+
+        verifyPassword(loginCommand.password, user.password)
+
+        val accessToken = tokenService.generateAccessToken(user.id)
+        val refreshToken = tokenService.generateRefreshToken(user.id)
+
+        return LoginResult(
+            accessToken = accessToken.token,
+            refreshToken = refreshToken,
+            expiresIn = accessToken.expiresIn
+        )
+    }
+
+    private fun verifyPassword(
+        loginCommandPassword: String,
+        userPassword: String,
+    ) {
+        if (!passwordEncoder.matches(loginCommandPassword, userPassword)) {
+            throw IllegalArgumentException("Passwords do not match")
         }
     }
 }
