@@ -1,5 +1,6 @@
 package com.study.kotlog.front.common.support
 
+import com.study.kotlog.front.common.web.MemberRequest
 import com.study.kotlog.util.JwtUtil
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -18,19 +19,17 @@ class AuthInterceptor(
         val token = request.getHeader("Authorization")
 
         if (token.isNullOrEmpty() || !token.startsWith("Bearer ")) {
-            response.status = HttpServletResponse.SC_UNAUTHORIZED
-            return false
+            throw IllegalArgumentException("invalid header = $token")
         }
 
         val jwt = token.removePrefix("Bearer ").trim()
 
         if (!jwtUtil.validateToken(jwt)) {
-            response.status = HttpServletResponse.SC_UNAUTHORIZED
-            return false
+            throw IllegalArgumentException("invalid JWT token = $jwt")
         }
 
         val userId = jwtUtil.extractUserId(jwt)
-        request.setAttribute("userId", userId)
+        request.setAttribute("memberRequest", MemberRequest(userId))
 
         return true
     }
