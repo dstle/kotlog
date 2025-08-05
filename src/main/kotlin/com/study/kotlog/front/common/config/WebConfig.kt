@@ -15,7 +15,7 @@ class WebConfig(
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(authInterceptor)
-            .addPathPatterns("/api/**")
+            .addPathPatterns("/api/v1/**")
             .excludePathPatterns(
                 "/api/v1/auth/signup",
                 "/api/v1/auth/login"
