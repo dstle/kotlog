@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -40,5 +42,22 @@ class PostController(
         val post = postService.createPost(request.toCommand(memberRequest.userId))
 
         return ResponseEntity.status(HttpStatus.CREATED).body(PostResponse.from(post))
+    }
+
+    @GetMapping("/{postId}")
+    @Operation(
+        summary = "post 단건 조회",
+        description = "postId로 게시물을 가져옵니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "게시물 가져오기 성공")
+        ]
+    )
+    fun getPost(@PathVariable postId: Long): ResponseEntity<PostResponse> {
+        val post = postService.getPost(postId)
+
+        return ResponseEntity.status(HttpStatus.OK).body(PostResponse.from(post))
     }
 }

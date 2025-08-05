@@ -19,4 +19,7 @@ class PostService(
 
         return post
     }
+
+    fun getPost(postId: Long): Post = postRepository.findById(postId)
+        .orElseThrow { IllegalArgumentException("Post with id $postId does not exist") }
 }
