@@ -3,13 +3,19 @@ package com.study.kotlog.domain.post
 import com.study.kotlog.domain.post.dto.CreatePostCommand
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Pageable
 
 @SpringBootTest
 class PostServiceTest(
     val postService: PostService,
     val postRepository: PostRepository,
 ) : FunSpec({
+    beforeTest {
+        postRepository.deleteAll()
+    }
+
     test("게시물 하나 등록 성공") {
         val command = CreatePostCommand(
             authorId = 1L,
@@ -41,5 +47,51 @@ class PostServiceTest(
         post.title shouldBe createdPost.title
         post.content shouldBe createdPost.content
         post.authorId shouldBe createdPost.authorId
+    }
+
+    test("게시물 다건 조회 검색 성공(키워드 X)") {
+        (1..15).forEach { i ->
+            val command = CreatePostCommand(
+                authorId = i.toLong(),
+                title = "Title $i",
+                content = "Content $i"
+            )
+
+            postService.createPost(command)
+        }
+
+        val posts = postService.getPosts(null, Pageable.ofSize(10))
+
+        posts.size shouldBe 10
+    }
+
+    test("게시물 다건 조회 검색 성공(키워드 O)") {
+        (1..15).forEach { i ->
+            val command = CreatePostCommand(
+                authorId = i.toLong(),
+                title = "Test $i",
+                content = "Content $i"
+            )
+
+            postService.createPost(command)
+        }
+
+        (1..3).forEach { i ->
+            val command = CreatePostCommand(
+                authorId = i.toLong(),
+                title = "Title $i",
+                content = "Content $i"
+            )
+
+            postService.createPost(command)
+        }
+
+        val posts = postService.getPosts("Title", Pageable.ofSize(10))
+
+        posts.content.forEach { post ->
+            post.title shouldContain "Title"
+        }
+
+        posts.content.size shouldBe 3
     }
 })

@@ -22,4 +22,6 @@ class Post(
             content: String,
         ): Post = Post(authorId, title, content)
     }
+
+    override fun toString(): String = "Post(authorId=$authorId, title='$title', content='$content')"
 }
