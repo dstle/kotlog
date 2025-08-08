@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -104,5 +105,28 @@ class PostController(
         val updatePost = postService.updatePost(request.toCommand(memberRequest.userId, postId))
 
         return ResponseEntity.status(HttpStatus.OK).body(PostResponse.from(updatePost))
+    }
+
+    @DeleteMapping("/{postId}")
+    @Operation(
+        summary = "post 삭제",
+        description = "게시물을 삭제합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "게시물 삭제 성공"),
+            ApiResponse(responseCode = "401", description = "인증 실패"),
+            ApiResponse(responseCode = "403", description = "권한 없음"),
+            ApiResponse(responseCode = "404", description = "게시물 없음")
+        ]
+    )
+    fun deletePost(
+        memberRequest: MemberRequest,
+        @PathVariable postId: Long,
+    ): ResponseEntity<Void> {
+        postService.deletePost(memberRequest.userId, postId)
+
+        return ResponseEntity.noContent().build()
     }
 }
