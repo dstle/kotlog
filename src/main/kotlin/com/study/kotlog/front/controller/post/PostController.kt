@@ -4,7 +4,6 @@ import com.study.kotlog.domain.post.PostService
 import com.study.kotlog.front.common.web.MemberRequest
 import com.study.kotlog.front.controller.post.dto.CreatePostRequest
 import com.study.kotlog.front.controller.post.dto.PostResponse
-import com.study.kotlog.front.controller.post.dto.toDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -82,5 +81,5 @@ class PostController(
         @RequestParam(required = false) keyword: String?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC) pageable: Pageable,
     ): Page<PostResponse> = postService.getPosts(keyword, pageable)
-        .map { it.toDto() }
+        .map { PostResponse.from(it) }
 }

@@ -69,6 +69,16 @@ class PostServiceTest(
         (1..15).forEach { i ->
             val command = CreatePostCommand(
                 authorId = i.toLong(),
+                title = "Test $i",
+                content = "Content $i"
+            )
+
+            postService.createPost(command)
+        }
+
+        (1..3).forEach { i ->
+            val command = CreatePostCommand(
+                authorId = i.toLong(),
                 title = "Title $i",
                 content = "Content $i"
             )
@@ -82,6 +92,6 @@ class PostServiceTest(
             post.title shouldContain "Title"
         }
 
-        posts.content.size shouldBe 10
+        posts.content.size shouldBe 3
     }
 })
