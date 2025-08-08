@@ -115,18 +115,13 @@ class PostController(
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "204", description = "게시물 삭제 성공"),
-            ApiResponse(responseCode = "401", description = "인증 실패"),
-            ApiResponse(responseCode = "403", description = "권한 없음"),
-            ApiResponse(responseCode = "404", description = "게시물 없음")
+            ApiResponse(responseCode = "200", description = "게시물 삭제 성공"),
         ]
     )
     fun deletePost(
         memberRequest: MemberRequest,
         @PathVariable postId: Long,
-    ): ResponseEntity<Void> {
+    ) {
         postService.deletePost(memberRequest.userId, postId)
-
-        return ResponseEntity.noContent().build()
     }
 }
