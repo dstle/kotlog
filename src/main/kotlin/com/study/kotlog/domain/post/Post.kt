@@ -11,9 +11,9 @@ class Post(
     @Column(name = "author_id", nullable = false)
     val authorId: Long,
     @Column(name = "title", nullable = false)
-    val title: String,
+    var title: String,
     @Column(name = "content", nullable = false)
-    val content: String,
+    var content: String,
 ) : BaseEntity() {
     companion object {
         fun of(

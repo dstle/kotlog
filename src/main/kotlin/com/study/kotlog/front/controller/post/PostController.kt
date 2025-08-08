@@ -4,6 +4,7 @@ import com.study.kotlog.domain.post.PostService
 import com.study.kotlog.front.common.web.MemberRequest
 import com.study.kotlog.front.controller.post.dto.CreatePostRequest
 import com.study.kotlog.front.controller.post.dto.PostResponse
+import com.study.kotlog.front.controller.post.dto.UpdatePostRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -82,4 +84,25 @@ class PostController(
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC) pageable: Pageable,
     ): Page<PostResponse> = postService.getPosts(keyword, pageable)
         .map { PostResponse.from(it) }
+
+    @PutMapping("/{postId}")
+    @Operation(
+        summary = "post 수정",
+        description = "게시물을 수정합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "게시물 수정 성공")
+        ]
+    )
+    fun updatePost(
+        memberRequest: MemberRequest,
+        @PathVariable postId: Long,
+        @RequestBody request: UpdatePostRequest,
+    ): ResponseEntity<PostResponse> {
+        val updatePost = postService.updatePost(request.toCommand(memberRequest.userId, postId))
+
+        return ResponseEntity.status(HttpStatus.OK).body(PostResponse.from(updatePost))
+    }
 }
