@@ -18,7 +18,7 @@ class PostServiceTest(
         postRepository.deleteAll()
     }
 
-    context("Post 생성") {
+    context("게시물 생성") {
         test("게시물 하나 등록 성공") {
             val command = CreatePostCommand(
                 authorId = 1L,
@@ -143,7 +143,40 @@ class PostServiceTest(
 
             shouldThrow<IllegalArgumentException> {
                 postService.updatePost(updatePostCommand)
-            }.message shouldBe "Post with postId : ${updatePostCommand.postId} does not belong to author id : ${updatePostCommand.authorId}"
+            }.message shouldBe "Post with postId : ${updatePostCommand.postId} does not belong to authorId : ${updatePostCommand.authorId}"
+        }
+    }
+
+    context("게시물 삭제") {
+        test("게시물 삭제 성공") {
+            val createPostCommand = CreatePostCommand(
+                authorId = 1L,
+                title = "게시물 생성",
+                content = "내용 생성"
+            )
+
+            val response = postService.createPost(createPostCommand)
+
+            postService.deletePost(1L, response.id)
+
+            shouldThrow<IllegalArgumentException> {
+                postService.getPost(response.id)
+            }.message shouldBe "Post with postId ${response.id} does not exist"
+        }
+
+        test("게시물 작성자가 달라서 실패") {
+            val createPostCommand = CreatePostCommand(
+                authorId = 1L,
+                title = "게시물 생성",
+                content = "내용 생성"
+            )
+
+            val response = postService.createPost(createPostCommand)
+            val userId = 2L
+
+            shouldThrow<IllegalArgumentException> {
+                postService.deletePost(userId, response.id)
+            }.message shouldBe "Post with postId : ${response.id} does not belong to userId : $userId"
         }
     }
 })

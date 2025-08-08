@@ -25,7 +25,7 @@ class PostService(
     }
 
     fun getPost(postId: Long): Post = postRepository.findById(postId)
-        .orElseThrow { IllegalArgumentException("Post with id $postId does not exist") }
+        .orElseThrow { IllegalArgumentException("Post with postId $postId does not exist") }
 
     fun getPosts(
         keyword: String?,
@@ -41,12 +41,25 @@ class PostService(
         val post = getPost(updatePostCommand.postId)
 
         if (post.authorId != updatePostCommand.authorId) {
-            throw IllegalArgumentException("Post with postId : ${updatePostCommand.postId} does not belong to author id : ${updatePostCommand.authorId}")
+            throw IllegalArgumentException("Post with postId : ${updatePostCommand.postId} does not belong to authorId : ${updatePostCommand.authorId}")
         }
 
         post.title = updatePostCommand.title
         post.content = updatePostCommand.content
 
         return post
+    }
+
+    fun deletePost(
+        userId: Long,
+        postId: Long,
+    ) {
+        val post = getPost(postId)
+
+        if (post.authorId != userId) {
+            throw IllegalArgumentException("Post with postId : $postId does not belong to userId : $userId")
+        }
+
+        postRepository.delete(post)
     }
 }

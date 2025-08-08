@@ -19,6 +19,6 @@ data class UpdatePostRequest(
         authorId = authorId,
         postId = postId,
         title = title,
-        content = content,
+        content = content
     )
 }
