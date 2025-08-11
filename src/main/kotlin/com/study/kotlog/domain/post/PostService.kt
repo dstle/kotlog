@@ -2,7 +2,6 @@ package com.study.kotlog.domain.post
 
 import com.study.kotlog.domain.post.dto.CreatePostCommand
 import com.study.kotlog.domain.post.dto.UpdatePostCommand
-import com.study.kotlog.domain.user.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

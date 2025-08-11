@@ -13,7 +13,6 @@ class CommentService(
     private val postRepository: PostRepository,
 ) {
     fun createComment(command: CreateCommentCommand): Comment {
-        validateUserExists(command.authorId)
         validatePostExists(command.postId)
 
         val referenceUser = userRepository.getReferenceById(command.authorId)
@@ -32,12 +31,6 @@ class CommentService(
         validatePostExists(postId)
 
         return commentRepository.findByPostId(postId).map { CommentResult.from(it) }
-    }
-
-    private fun validateUserExists(userId: Long) {
-        if (!userRepository.existsById(userId)) {
-            throw IllegalArgumentException("user not found with id $userId")
-        }
     }
 
     private fun validatePostExists(postId: Long) {

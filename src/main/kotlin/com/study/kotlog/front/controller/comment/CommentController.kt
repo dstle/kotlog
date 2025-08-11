@@ -35,9 +35,9 @@ class CommentController(
         commentService.createComment(request.toCommand(memberRequest.userId))
     }
 
-    @GetMapping("/comments/{postId}")
+    @GetMapping
     @Operation(
-        summary = "댓글 다건 조회",
+        summary = "comment 다건 조회",
         description = "postId 로 조회되는 모든 댓글을 가져옵니다",
         security = [SecurityRequirement(name = "Bearer Authentication")]
     )
@@ -46,7 +46,7 @@ class CommentController(
             ApiResponse(responseCode = "200", description = "댓글 가져오기 성공")
         ]
     )
-    fun getComments(@PathVariable postId: Long): List<CommentResponse> {
+    fun getComments(@RequestParam postId: Long): List<CommentResponse> {
         val commentResults = commentService.getComments(postId)
 
         return commentResults.map { CommentResponse.from(it) }
