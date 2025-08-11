@@ -11,14 +11,8 @@ import org.springframework.stereotype.Service
 @Service
 class PostService(
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository,
 ) {
-
     fun createPost(createPostCommand: CreatePostCommand): Post {
-        if (!userRepository.existsById(createPostCommand.authorId)) {
-            throw IllegalArgumentException("User doesn't exists with id ${createPostCommand.authorId}")
-        }
-
         val post = Post.of(
             authorId = createPostCommand.authorId,
             title = createPostCommand.title,
