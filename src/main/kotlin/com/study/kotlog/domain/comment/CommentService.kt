@@ -27,6 +27,12 @@ class CommentService(
         return comment
     }
 
+    fun getComments(postId: Long): List<CommentResult> {
+        validatePostExists(postId)
+
+        return commentRepository.findByPostId(postId).map { CommentResult.from(it) }
+    }
+
     private fun validatePostExists(postId: Long) {
         if (!postRepository.existsById(postId)) {
             throw IllegalArgumentException("post not found with id $postId")
