@@ -2,6 +2,7 @@ package com.study.kotlog.domain.post
 
 import com.study.kotlog.domain.post.dto.CreatePostCommand
 import com.study.kotlog.domain.post.dto.UpdatePostCommand
+import com.study.kotlog.domain.user.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -10,9 +11,14 @@ import org.springframework.stereotype.Service
 @Service
 class PostService(
     private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
 ) {
 
     fun createPost(createPostCommand: CreatePostCommand): Post {
+        if (!userRepository.existsById(createPostCommand.authorId)) {
+            throw IllegalArgumentException("User doesn't exists with id ${createPostCommand.authorId}")
+        }
+
         val post = Post.of(
             authorId = createPostCommand.authorId,
             title = createPostCommand.title,

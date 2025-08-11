@@ -115,7 +115,7 @@ class PostController(
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "게시물 삭제 성공"),
+            ApiResponse(responseCode = "200", description = "게시물 삭제 성공")
         ]
     )
     fun deletePost(
