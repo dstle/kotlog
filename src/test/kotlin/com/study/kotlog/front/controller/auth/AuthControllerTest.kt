@@ -14,11 +14,6 @@ class AuthControllerTest(
     val mockMvc: MockMvc,
     val userRepository: UserRepository,
 ) : FunSpec({
-
-    afterTest {
-        userRepository.deleteAll()
-    }
-
     test("POST /api/v1/auth/signup 요청이 들어왔을 때 200 OK") {
         val signupRequest = SignupRequest(
             username = "dustle13",

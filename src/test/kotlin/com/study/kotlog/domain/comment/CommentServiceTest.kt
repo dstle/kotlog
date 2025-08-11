@@ -52,4 +52,36 @@ class CommentServiceTest(
             createComment.content shouldBe comment.content
         }
     }
+
+    context("댓글 조회") {
+        test("postId 로 댓글 조회 성공") {
+            val user = User(
+                username = "dustle",
+                password = "111",
+                email = "111",
+                nickname = "111"
+            ).also {
+                userRepository.save(it)
+            }
+
+            val post = Post(
+                authorId = 1L,
+                title = "title",
+                content = "content"
+            ).also {
+                postRepository.save(it)
+            }
+
+            (1..5).forEach { i ->
+                Comment(
+                    user = user,
+                    postId = post.id,
+                    content = "Content $i"
+                ).also {
+                    commentRepository.save(it)
+                }
+            }
+            commentService.getComments(post.id).size shouldBe 5
+        }
+    }
 })
