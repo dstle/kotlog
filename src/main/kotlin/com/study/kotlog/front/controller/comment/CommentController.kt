@@ -51,4 +51,22 @@ class CommentController(
 
         return commentResults.map { CommentResponse.from(it) }
     }
+
+    @DeleteMapping("/{commentId}")
+    @Operation(
+        summary = "comment 삭제",
+        description = "작성한 댓글을 삭제합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "댓글 삭제 성공")
+        ]
+    )
+    fun deleteComment(
+        @RequestParam commentId: Long,
+        memberRequest: MemberRequest,
+    ) {
+        commentService.deleteComment(commentId, memberRequest.userId)
+    }
 }
