@@ -71,7 +71,6 @@ class CommentController(
         commentService.deleteComment(commentId, memberRequest.userId)
     }
 
-
     @PutMapping("/{commentId}")
     @Operation(
         summary = "comment 수정",
