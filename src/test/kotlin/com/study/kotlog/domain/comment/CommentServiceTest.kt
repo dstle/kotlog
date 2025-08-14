@@ -1,6 +1,7 @@
 package com.study.kotlog.domain.comment
 
 import com.study.kotlog.domain.comment.dto.CreateCommentCommand
+import com.study.kotlog.domain.comment.dto.UpdateCommentCommand
 import com.study.kotlog.domain.post.Post
 import com.study.kotlog.domain.post.PostRepository
 import com.study.kotlog.domain.user.User
@@ -174,6 +175,47 @@ class CommentServiceTest(
             shouldThrow<IllegalArgumentException> {
                 commentService.deleteComment(commentId, user.id)
             }.message shouldBe "Comment with commentId $commentId does not exist"
+        }
+    }
+
+    context("댓글 수정") {
+        test("댓글 수정 성공") {
+            val user = User(
+                username = "dustle",
+                password = "111",
+                email = "111",
+                nickname = "111"
+            ).also {
+                userRepository.save(it)
+            }
+
+            val post = Post(
+                authorId = user.id,
+                title = "title",
+                content = "content"
+            ).also {
+                postRepository.save(it)
+            }
+
+            val comment = Comment(
+                user = user,
+                postId = post.id,
+                content = "test"
+            ).also {
+                commentRepository.save(it)
+            }
+
+            val updateCommand = UpdateCommentCommand(
+                commentId = comment.id,
+                authorId = user.id,
+                content = "update test"
+            )
+
+            val result = commentService.updateComment(updateCommand)
+
+            result.user.id shouldBe updateCommand.authorId
+            result.id shouldBe updateCommand.commentId
+            result.content shouldBe updateCommand.content
         }
     }
 })

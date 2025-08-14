@@ -20,5 +20,9 @@ class Comment(
     val user: User,
 
     @Column(name = "content", nullable = false)
-    val content: String,
-) : BaseEntity()
+    var content: String,
+) : BaseEntity() {
+    fun updateContent(content: String) {
+        this.content = content
+    }
+}

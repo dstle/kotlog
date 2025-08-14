@@ -4,6 +4,7 @@ import com.study.kotlog.domain.comment.CommentService
 import com.study.kotlog.front.common.web.MemberRequest
 import com.study.kotlog.front.controller.comment.dto.CommentResponse
 import com.study.kotlog.front.controller.comment.dto.CreateCommentRequest
+import com.study.kotlog.front.controller.comment.dto.UpdateCommentRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -68,5 +69,25 @@ class CommentController(
         memberRequest: MemberRequest,
     ) {
         commentService.deleteComment(commentId, memberRequest.userId)
+    }
+
+
+    @PutMapping("/{commentId}")
+    @Operation(
+        summary = "comment 수정",
+        description = "작성한 댓글을 수정합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "댓글 수정 성공")
+        ]
+    )
+    fun updateComment(
+        @RequestParam commentId: Long,
+        memberRequest: MemberRequest,
+        @RequestBody request: UpdateCommentRequest,
+    ) {
+        commentService.updateComment(request.toCommand(memberRequest.userId, commentId))
     }
 }
