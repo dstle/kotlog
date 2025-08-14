@@ -2,10 +2,10 @@ package com.study.kotlog.domain.post
 
 import com.study.kotlog.domain.post.dto.CreatePostCommand
 import com.study.kotlog.domain.post.dto.UpdatePostCommand
-import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PostService(

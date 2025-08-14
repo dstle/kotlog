@@ -2,9 +2,11 @@ package com.study.kotlog.domain.comment
 
 import com.study.kotlog.domain.comment.dto.CommentResult
 import com.study.kotlog.domain.comment.dto.CreateCommentCommand
+import com.study.kotlog.domain.comment.dto.UpdateCommentCommand
 import com.study.kotlog.domain.post.PostRepository
 import com.study.kotlog.domain.user.UserRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CommentService(
@@ -43,13 +45,33 @@ class CommentService(
         commentId: Long,
         memberId: Long,
     ) {
-        val comment = commentRepository.findById(commentId)
-            .orElseThrow { IllegalArgumentException("Comment with commentId $commentId does not exist") }
+        val comment = getComment(commentId)
 
-        if (comment.user.id != memberId) {
-            throw IllegalArgumentException("User with id $memberId does not belong to this comment")
-        }
+        validateCommentOwner(comment.user.id, memberId)
 
         commentRepository.delete(comment)
+    }
+
+    private fun validateCommentOwner(
+        authorId: Long,
+        memberId: Long,
+    ) {
+        if (authorId != memberId) {
+            throw IllegalArgumentException("User with id $memberId does not belong to this comment")
+        }
+    }
+
+    private fun getComment(commentId: Long): Comment = commentRepository.findById(commentId)
+        .orElseThrow { IllegalArgumentException("Comment with commentId $commentId does not exist") }
+
+    @Transactional
+    fun updateComment(updateCommentCommand: UpdateCommentCommand): Comment {
+        val comment = getComment(updateCommentCommand.commentId)
+
+        validateCommentOwner(comment.user.id, updateCommentCommand.authorId)
+
+        comment.updateContent(updateCommentCommand.content)
+
+        return comment
     }
 }
