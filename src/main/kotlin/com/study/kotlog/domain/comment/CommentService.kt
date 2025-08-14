@@ -38,4 +38,18 @@ class CommentService(
             throw IllegalArgumentException("post not found with id $postId")
         }
     }
+
+    fun deleteComment(
+        commentId: Long,
+        memberId: Long,
+    ) {
+        val comment = commentRepository.findById(commentId)
+            .orElseThrow { IllegalArgumentException("Comment with commentId $commentId does not exist") }
+
+        if (comment.user.id != memberId) {
+            throw IllegalArgumentException("User with id $memberId does not belong to this comment")
+        }
+
+        commentRepository.delete(comment)
+    }
 }
