@@ -25,15 +25,11 @@ class JwtUtil {
             .compact()
     }
 
-    fun validateToken(token: String): Boolean = try {
+    fun validateToken(token: String) {
         Jwts.parser()
             .verifyWith(key)
             .build()
             .parseSignedClaims(token)
-        true
-    } catch (e: Exception) {
-        LOG.error("Invalid JWT token", e)
-        false
     }
 
     fun extractUserId(token: String): Long {

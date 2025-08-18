@@ -1,5 +1,6 @@
 package com.study.kotlog.util
 
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -22,14 +23,18 @@ class JwtUtilTest(
         }
 
         test("validate token 실패 : 잘못된 token") {
-            jwtUtil.validateToken("invalid") shouldBe false
+            shouldThrowExactly<Exception> {
+                jwtUtil.validateToken("invalid")
+            }
         }
 
         test("validate token 실패 : 기간 만료") {
             val userId = Random.nextLong().absoluteValue
             val token = jwtUtil.generateToken(userId, -1000L)
 
-            jwtUtil.validateToken(token) shouldBe false
+            shouldThrowExactly<Exception> {
+                jwtUtil.validateToken(token)
+            }
         }
 
         test("만료 시간 확인") {
