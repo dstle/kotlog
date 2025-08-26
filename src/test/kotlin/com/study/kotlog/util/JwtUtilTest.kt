@@ -1,7 +1,6 @@
 package com.study.kotlog.util
 
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.MalformedJwtException
+import com.study.kotlog.exception.FrontException
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FunSpec
@@ -28,7 +27,7 @@ class JwtUtilTest(
         }
 
         test("validate token 실패 : 잘못된 token") {
-            shouldThrowExactly<MalformedJwtException> {
+            shouldThrowExactly<FrontException> {
                 jwtUtil.validateToken("invalid")
             }
         }
@@ -37,7 +36,7 @@ class JwtUtilTest(
             val userId = Random.nextLong().absoluteValue
             val token = jwtUtil.generateToken(userId, -1000L)
 
-            shouldThrowExactly<ExpiredJwtException> {
+            shouldThrowExactly<FrontException> {
                 jwtUtil.validateToken(token)
             }
         }
