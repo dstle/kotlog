@@ -2,7 +2,6 @@ package com.study.kotlog.util
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKey
@@ -25,15 +24,11 @@ class JwtUtil {
             .compact()
     }
 
-    fun validateToken(token: String): Boolean = try {
+    fun validateToken(token: String) {
         Jwts.parser()
             .verifyWith(key)
             .build()
             .parseSignedClaims(token)
-        true
-    } catch (e: Exception) {
-        LOG.error("Invalid JWT token", e)
-        false
     }
 
     fun extractUserId(token: String): Long {
@@ -63,9 +58,5 @@ class JwtUtil {
             .payload
 
         return claims.issuedAt.time
-    }
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(this::class.java)
     }
 }
