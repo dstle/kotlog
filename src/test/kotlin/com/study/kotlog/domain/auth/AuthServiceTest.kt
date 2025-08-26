@@ -4,16 +4,21 @@ import com.study.kotlog.domain.auth.dto.LoginCommand
 import com.study.kotlog.domain.auth.dto.SignupCommand
 import com.study.kotlog.domain.user.User
 import com.study.kotlog.domain.user.UserRepository
+import com.study.kotlog.util.JwtUtil
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.springframework.boot.test.context.SpringBootTest
+import kotlin.math.absoluteValue
+import kotlin.random.Random
 
 @SpringBootTest
 class AuthServiceTest(
     val authService: AuthService,
     val userRepository: UserRepository,
+    val jwtUtil: JwtUtil,
 ) : FunSpec({
 
     afterTest {
@@ -130,6 +135,26 @@ class AuthServiceTest(
             shouldThrow<IllegalArgumentException> {
                 authService.login(loginCommand)
             }.message shouldBe "Passwords do not match"
+        }
+    }
+
+    context("재발행 테스트") {
+        test("토큰 재발행 성공") {
+            val userId = Random.nextLong().absoluteValue
+            val token = jwtUtil.generateToken(userId, 1000L)
+
+            val result = authService.reissue(token)
+
+            shouldNotThrow<Throwable> {
+                jwtUtil.validateToken(result.accessToken)
+            }
+
+            shouldNotThrow<Throwable> {
+                jwtUtil.validateToken(result.refreshToken)
+            }
+
+            jwtUtil.extractUserId(result.accessToken) shouldBe userId
+            jwtUtil.extractUserId(result.refreshToken) shouldBe userId
         }
     }
 })

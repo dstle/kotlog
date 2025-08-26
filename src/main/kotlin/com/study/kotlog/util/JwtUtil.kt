@@ -1,7 +1,11 @@
 package com.study.kotlog.util
 
+import com.study.kotlog.exception.FrontErrorCode
+import com.study.kotlog.exception.FrontException
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKey
@@ -25,10 +29,18 @@ class JwtUtil {
     }
 
     fun validateToken(token: String) {
-        Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
+        try {
+            Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+        } catch (e: ExpiredJwtException) {
+            LOG.info("JWT expired token=$token", e)
+            throw FrontException(FrontErrorCode.EXPIRED_TOKEN)
+        } catch (e: Exception) {
+            LOG.error("JWT validateToken error jwt=$token", e)
+            throw FrontException(FrontErrorCode.INVALID_TOKEN)
+        }
     }
 
     fun extractUserId(token: String): Long {
@@ -58,5 +70,9 @@ class JwtUtil {
             .payload
 
         return claims.issuedAt.time
+    }
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(this::class.java)
     }
 }

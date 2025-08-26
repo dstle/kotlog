@@ -3,6 +3,7 @@ package com.study.kotlog.front.controller.auth
 import com.study.kotlog.domain.auth.AuthService
 import com.study.kotlog.front.controller.auth.dto.LoginRequest
 import com.study.kotlog.front.controller.auth.dto.LoginResponse
+import com.study.kotlog.front.controller.auth.dto.ReissueRequest
 import com.study.kotlog.front.controller.auth.dto.SignupRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -48,6 +49,22 @@ class AuthController(
     )
     fun login(@RequestBody request: LoginRequest): ResponseEntity<LoginResponse> {
         val result = authService.login(request.toCommand())
+
+        return ResponseEntity.status(HttpStatus.OK).body(LoginResponse.from(result))
+    }
+
+    @PostMapping("/reissue")
+    @Operation(
+        summary = "재발행",
+        description = "JWT token 의 기간이 만료되었을 경우 refresh token 을 확인 후 재발행 합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "재발행 성공")
+        ]
+    )
+    fun reissue(@RequestBody request: ReissueRequest): ResponseEntity<LoginResponse> {
+        val result = authService.reissue(request.refreshToken)
 
         return ResponseEntity.status(HttpStatus.OK).body(LoginResponse.from(result))
     }

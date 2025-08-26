@@ -15,6 +15,12 @@ class TokenService(
 
     fun generateRefreshToken(userId: Long): String = jwtUtil.generateToken(userId, REFRESH_TOKEN_EXPIRE_MILLIS)
 
+    fun validateRefreshToken(refreshToken: String) {
+        jwtUtil.validateToken(refreshToken)
+    }
+
+    fun extractUserId(refreshToken: String): Long = jwtUtil.extractUserId(refreshToken)
+
     companion object {
         private const val ACCESS_TOKEN_EXPIRE_SECONDS = 30 * 60L // 30분
         private const val REFRESH_TOKEN_EXPIRE_SECONDS = 14 * 24 * 60 * 60L // 14일

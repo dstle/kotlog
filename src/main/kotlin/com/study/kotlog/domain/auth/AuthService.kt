@@ -67,4 +67,18 @@ class AuthService(
             throw IllegalArgumentException("Passwords do not match")
         }
     }
+
+    fun reissue(refreshToken: String): LoginResult {
+        tokenService.validateRefreshToken(refreshToken)
+        val userId = tokenService.extractUserId(refreshToken)
+
+        val accessToken = tokenService.generateAccessToken(userId)
+        val refreshToken = tokenService.generateRefreshToken(userId)
+
+        return LoginResult(
+            accessToken = accessToken.token,
+            refreshToken = refreshToken,
+            expiresIn = accessToken.expiresIn
+        )
+    }
 }
