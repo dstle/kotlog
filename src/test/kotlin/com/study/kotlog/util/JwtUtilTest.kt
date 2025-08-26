@@ -1,5 +1,9 @@
 package com.study.kotlog.util
 
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.MalformedJwtException
+import io.kotest.assertions.throwables.shouldNotThrow
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -17,19 +21,25 @@ class JwtUtilTest(
             val userId = Random.nextLong().absoluteValue
             val token = jwtUtil.generateToken(userId, 1000L)
 
-            jwtUtil.validateToken(token) shouldBe true
+            shouldNotThrow<Throwable> {
+                jwtUtil.validateToken(token)
+            }
             jwtUtil.extractUserId(token) shouldBe userId
         }
 
         test("validate token 실패 : 잘못된 token") {
-            jwtUtil.validateToken("invalid") shouldBe false
+            shouldThrowExactly<MalformedJwtException> {
+                jwtUtil.validateToken("invalid")
+            }
         }
 
         test("validate token 실패 : 기간 만료") {
             val userId = Random.nextLong().absoluteValue
             val token = jwtUtil.generateToken(userId, -1000L)
 
-            jwtUtil.validateToken(token) shouldBe false
+            shouldThrowExactly<ExpiredJwtException> {
+                jwtUtil.validateToken(token)
+            }
         }
 
         test("만료 시간 확인") {
@@ -46,12 +56,16 @@ class JwtUtilTest(
         test("extract token 비교") {
             val userId1 = Random.nextLong().absoluteValue
             val token1 = jwtUtil.generateToken(userId1, 1000L)
-            jwtUtil.validateToken(token1) shouldBe true
+            shouldNotThrow<Throwable> {
+                jwtUtil.validateToken(token1)
+            }
             val extractUserId1 = jwtUtil.extractUserId(token1)
 
             val userId2 = Random.nextLong().absoluteValue
             val token2 = jwtUtil.generateToken(userId2, 1000L)
-            jwtUtil.validateToken(token2) shouldBe true
+            shouldNotThrow<Throwable> {
+                jwtUtil.validateToken(token2)
+            }
             val extractUserId2 = jwtUtil.extractUserId(token2)
 
             extractUserId1 shouldBe userId1
