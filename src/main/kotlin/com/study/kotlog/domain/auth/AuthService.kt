@@ -3,9 +3,12 @@ package com.study.kotlog.domain.auth
 import com.study.kotlog.domain.auth.dto.LoginCommand
 import com.study.kotlog.domain.auth.dto.LoginResult
 import com.study.kotlog.domain.auth.dto.SignupCommand
+import com.study.kotlog.domain.redis.RefreshTokenStore
 import com.study.kotlog.domain.token.TokenService
 import com.study.kotlog.domain.user.User
 import com.study.kotlog.domain.user.UserRepository
+import com.study.kotlog.exception.FrontErrorCode
+import com.study.kotlog.exception.FrontException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -14,6 +17,7 @@ class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val tokenService: TokenService,
+    private val refreshTokenStore: RefreshTokenStore,
 ) {
     fun signUp(signupCommand: SignupCommand) {
         validateDuplicateUsername(signupCommand.username)
@@ -52,6 +56,8 @@ class AuthService(
         val accessToken = tokenService.generateAccessToken(user.id)
         val refreshToken = tokenService.generateRefreshToken(user.id)
 
+        refreshTokenStore.save(user.id, refreshToken, 14 * 24 * 60 * 60L)
+
         return LoginResult(
             accessToken = accessToken.token,
             refreshToken = refreshToken,
@@ -72,6 +78,12 @@ class AuthService(
         tokenService.validateRefreshToken(refreshToken)
         val userId = tokenService.extractUserId(refreshToken)
 
+        val hash = refreshTokenStore.getHash(userId) ?: throw FrontException(FrontErrorCode.REFRESH_TOKEN_NOT_FOUND)
+
+        if (!refreshTokenStore.matchRefreshToken(refreshToken, hash)) {
+            throw FrontException(FrontErrorCode.REFRESH_TOKEN_NOT_MATCH)
+        }
+
         val accessToken = tokenService.generateAccessToken(userId)
         val refreshToken = tokenService.generateRefreshToken(userId)
 
@@ -80,5 +92,9 @@ class AuthService(
             refreshToken = refreshToken,
             expiresIn = accessToken.expiresIn
         )
+    }
+
+    fun logout(userId: Long) {
+        refreshTokenStore.delete(userId)
     }
 }

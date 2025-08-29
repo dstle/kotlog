@@ -2,23 +2,26 @@ package com.study.kotlog.domain.auth
 
 import com.study.kotlog.domain.auth.dto.LoginCommand
 import com.study.kotlog.domain.auth.dto.SignupCommand
+import com.study.kotlog.domain.token.TokenService
 import com.study.kotlog.domain.user.User
 import com.study.kotlog.domain.user.UserRepository
+import com.study.kotlog.exception.FrontException
 import com.study.kotlog.util.JwtUtil
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import kotlin.math.absoluteValue
-import kotlin.random.Random
 
 @SpringBootTest
 class AuthServiceTest(
     val authService: AuthService,
     val userRepository: UserRepository,
     val jwtUtil: JwtUtil,
+    @Autowired private val tokenService: TokenService,
 ) : FunSpec({
 
     afterTest {
@@ -140,10 +143,23 @@ class AuthServiceTest(
 
     context("재발행 테스트") {
         test("토큰 재발행 성공") {
-            val userId = Random.nextLong().absoluteValue
-            val token = jwtUtil.generateToken(userId, 1000L)
+            val signupCommand = SignupCommand(
+                username = "dustle1",
+                password = "111111111111111",
+                email = "111",
+                nickname = "Dustle"
+            )
 
-            val result = authService.reissue(token)
+            authService.signUp(signupCommand)
+
+            val loginCommand = LoginCommand(
+                username = "dustle1",
+                password = "111111111111111"
+            )
+
+            val loginResult = authService.login(loginCommand)
+
+            val result = authService.reissue(loginResult.refreshToken)
 
             shouldNotThrow<Throwable> {
                 jwtUtil.validateToken(result.accessToken)
@@ -152,9 +168,14 @@ class AuthServiceTest(
             shouldNotThrow<Throwable> {
                 jwtUtil.validateToken(result.refreshToken)
             }
+        }
 
-            jwtUtil.extractUserId(result.accessToken) shouldBe userId
-            jwtUtil.extractUserId(result.refreshToken) shouldBe userId
+        test("토큰 재발행 레디스에 토큰이 없어서 실패") {
+            val refreshToken = tokenService.generateRefreshToken(1)
+
+            shouldThrowExactly<FrontException> {
+                authService.reissue(refreshToken)
+            }
         }
     }
 })
