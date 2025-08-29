@@ -1,4 +1,4 @@
-package com.study.kotlog.domain.redis
+package com.study.kotlog.domain.token
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull

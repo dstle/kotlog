@@ -3,7 +3,7 @@ package com.study.kotlog.domain.auth
 import com.study.kotlog.domain.auth.dto.LoginCommand
 import com.study.kotlog.domain.auth.dto.LoginResult
 import com.study.kotlog.domain.auth.dto.SignupCommand
-import com.study.kotlog.domain.redis.RefreshTokenStore
+import com.study.kotlog.domain.token.RefreshTokenStore
 import com.study.kotlog.domain.token.TokenService
 import com.study.kotlog.domain.user.User
 import com.study.kotlog.domain.user.UserRepository

@@ -1,4 +1,4 @@
-package com.study.kotlog.domain.redis.config
+package com.study.kotlog.infra.redis.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

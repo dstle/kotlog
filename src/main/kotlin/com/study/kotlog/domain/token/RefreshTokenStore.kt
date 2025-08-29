@@ -1,4 +1,4 @@
-package com.study.kotlog.domain.redis
+package com.study.kotlog.domain.token
 
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component

@@ -1,4 +1,4 @@
-package com.study.kotlog.domain.redis.config
+package com.study.kotlog.infra.redis.config
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
