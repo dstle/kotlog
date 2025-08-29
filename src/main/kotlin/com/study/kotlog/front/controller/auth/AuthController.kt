@@ -1,6 +1,7 @@
 package com.study.kotlog.front.controller.auth
 
 import com.study.kotlog.domain.auth.AuthService
+import com.study.kotlog.front.common.web.MemberRequest
 import com.study.kotlog.front.controller.auth.dto.LoginRequest
 import com.study.kotlog.front.controller.auth.dto.LoginResponse
 import com.study.kotlog.front.controller.auth.dto.ReissueRequest
@@ -8,6 +9,7 @@ import com.study.kotlog.front.controller.auth.dto.SignupRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -67,5 +69,20 @@ class AuthController(
         val result = authService.reissue(request.refreshToken)
 
         return ResponseEntity.status(HttpStatus.OK).body(LoginResponse.from(result))
+    }
+
+    @PostMapping("/logout")
+    @Operation(
+        summary = "로그아웃",
+        description = "Refresh Token 레디스에서 삭제",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "로그아웃 성공")
+        ]
+    )
+    fun logout(memberRequest: MemberRequest) {
+        authService.logout(memberRequest.userId)
     }
 }
