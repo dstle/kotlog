@@ -56,7 +56,7 @@ class AuthService(
         val accessToken = tokenService.generateAccessToken(user.id)
         val refreshToken = tokenService.generateRefreshToken(user.id)
 
-        refreshTokenStore.save(user.id, refreshToken, 14 * 24 * 60 * 60L)
+        refreshTokenStore.save(user.id, refreshToken, REDIS_REFRESH_TOKEN_EXPIRE_SECONDS)
 
         return LoginResult(
             accessToken = accessToken.token,
@@ -87,6 +87,8 @@ class AuthService(
         val accessToken = tokenService.generateAccessToken(userId)
         val refreshToken = tokenService.generateRefreshToken(userId)
 
+        refreshTokenStore.save(userId, refreshToken, REDIS_REFRESH_TOKEN_EXPIRE_SECONDS)
+
         return LoginResult(
             accessToken = accessToken.token,
             refreshToken = refreshToken,
@@ -96,5 +98,9 @@ class AuthService(
 
     fun logout(userId: Long) {
         refreshTokenStore.delete(userId)
+    }
+
+    companion object {
+        private const val REDIS_REFRESH_TOKEN_EXPIRE_SECONDS = 15 * 24 * 60 * 60L // 15일
     }
 }
