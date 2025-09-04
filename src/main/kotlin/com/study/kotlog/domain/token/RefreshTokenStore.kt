@@ -1,13 +1,13 @@
 package com.study.kotlog.domain.token
 
-import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Component
 import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
 
 @Component
 class RefreshTokenStore(
-    private val redisTemplate: RedisTemplate<String, String>,
+    private val redis: StringRedisTemplate,
 ) {
     private fun key(userId: Long) = "rt:$userId"
 
@@ -25,11 +25,11 @@ class RefreshTokenStore(
     ) {
         val hash = getSHA512(refreshToken)
 
-        redisTemplate.opsForValue().set(key(userId), hash, ttl, TimeUnit.SECONDS)
+        redis.opsForValue().set(key(userId), hash, ttl, TimeUnit.SECONDS)
     }
 
     fun delete(userId: Long) {
-        redisTemplate.delete(key(userId))
+        redis.delete(key(userId))
     }
 
     fun matchRefreshToken(
@@ -37,5 +37,5 @@ class RefreshTokenStore(
         redisRefreshToken: String,
     ): Boolean = redisRefreshToken == getSHA512(refreshToken)
 
-    fun getHash(userId: Long): String? = redisTemplate.opsForValue().get(key(userId))
+    fun getHash(userId: Long): String? = redis.opsForValue().get(key(userId))
 }
