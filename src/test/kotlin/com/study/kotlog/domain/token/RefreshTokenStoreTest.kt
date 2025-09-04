@@ -10,7 +10,8 @@ import org.springframework.data.redis.core.StringRedisTemplate
 class RefreshTokenStoreTest(
     val refreshTokenStore: RefreshTokenStore,
     val redis: StringRedisTemplate,
-) : FunSpec({
+) : FunSpec(
+    {
         beforeTest {
             redis.connectionFactory?.connection?.serverCommands()?.flushAll()
         }

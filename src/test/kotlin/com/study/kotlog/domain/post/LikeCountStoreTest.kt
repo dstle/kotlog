@@ -9,7 +9,8 @@ import org.springframework.data.redis.core.StringRedisTemplate
 class LikeCountStoreTest(
     val likeCountStore: LikeCountStore,
     val redis: StringRedisTemplate,
-) : FunSpec({
+) : FunSpec(
+    {
         beforeTest {
             redis.connectionFactory?.connection?.serverCommands()?.flushAll()
         }

@@ -31,9 +31,9 @@ class PostLikeController(
         memberRequest: MemberRequest,
         @PathVariable postId: Long,
     ): LikeStatusResponse {
-        val pair = postLikeService.getLikeStatus(postId, memberRequest.userId)
+        val result = postLikeService.getLikeStatus(postId, memberRequest.userId)
 
-        return LikeStatusResponse.from(pair.first, pair.second)
+        return LikeStatusResponse.from(result.isLiked, result.likeCount)
     }
 
     @PostMapping("/{postId}/like")
@@ -54,7 +54,7 @@ class PostLikeController(
         postLikeService.like(postId, memberRequest.userId)
     }
 
-    @DeleteMapping("/{postId}/like")
+    @PostMapping("/{postId}/unlike")
     @Operation(
         summary = "like 삭제",
         description = "사용자가 게시물 좋아요 취소",

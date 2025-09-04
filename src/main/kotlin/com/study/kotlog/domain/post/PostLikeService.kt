@@ -1,5 +1,6 @@
 package com.study.kotlog.domain.post
 
+import com.study.kotlog.domain.post.dto.LikeStatusResult
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,7 +11,10 @@ class PostLikeService(
     fun getLikeStatus(
         postId: Long,
         userId: Long,
-    ): Pair<Boolean, Long> = likeStateStore.isLiked(postId, userId) to likeCountStore.getTotal(postId)
+    ): LikeStatusResult = LikeStatusResult(
+        isLiked = likeStateStore.isLiked(postId, userId),
+        likeCount = likeCountStore.getTotal(postId)
+    )
 
     fun like(
         postId: Long,

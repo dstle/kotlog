@@ -22,10 +22,10 @@ class PostLikeServiceTest(
 
         likeStateStore.like(1, 1)
 
-        val pair = postLikeService.getLikeStatus(1, 1)
+        val result = postLikeService.getLikeStatus(1, 1)
 
-        pair.first shouldBe true
-        pair.second shouldBe increment
+        result.isLiked shouldBe true
+        result.likeCount shouldBe increment
     }
 
     test("사용자가 좋아요 누르기 성공") {
@@ -33,8 +33,8 @@ class PostLikeServiceTest(
 
         val likeStatus = postLikeService.getLikeStatus(1, 1)
 
-        likeStatus.first shouldBe true
-        likeStatus.second shouldBe 1
+        likeStatus.isLiked shouldBe true
+        likeStatus.likeCount shouldBe 1
     }
 
     test("사용자가 좋아요 중복으로 눌러서 좋아요 증가 반영 안됨") {
@@ -43,8 +43,8 @@ class PostLikeServiceTest(
 
         val likeStatus = postLikeService.getLikeStatus(1, 1)
 
-        likeStatus.first shouldBe true
-        likeStatus.second shouldBe 1
+        likeStatus.isLiked shouldBe true
+        likeStatus.likeCount shouldBe 1
     }
 
     test("사용자가 좋아요 취소 성공") {
@@ -53,7 +53,7 @@ class PostLikeServiceTest(
 
         val likeStatus = postLikeService.getLikeStatus(1, 1)
 
-        likeStatus.first shouldBe false
-        likeStatus.second shouldBe 0
+        likeStatus.isLiked shouldBe false
+        likeStatus.likeCount shouldBe 0
     }
 })
