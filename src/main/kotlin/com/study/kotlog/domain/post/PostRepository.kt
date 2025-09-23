@@ -4,9 +4,9 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface PostRepository : JpaRepository<Post, Long> {
+interface PostRepository : JpaRepository<PostEntity, Long> {
     fun findByTitleContaining(
         keyword: String,
         pageable: Pageable,
-    ): Page<Post>
+    ): Page<PostEntity>
 }

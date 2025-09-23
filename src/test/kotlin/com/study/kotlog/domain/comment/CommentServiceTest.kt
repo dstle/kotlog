@@ -2,7 +2,7 @@ package com.study.kotlog.domain.comment
 
 import com.study.kotlog.domain.comment.dto.CreateCommentCommand
 import com.study.kotlog.domain.comment.dto.UpdateCommentCommand
-import com.study.kotlog.domain.post.Post
+import com.study.kotlog.domain.post.PostEntity
 import com.study.kotlog.domain.post.PostRepository
 import com.study.kotlog.domain.user.User
 import com.study.kotlog.domain.user.UserRepository
@@ -34,7 +34,7 @@ class CommentServiceTest(
                 userRepository.save(it)
             }
 
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = user.id,
                 title = "title",
                 content = "content"
@@ -44,7 +44,7 @@ class CommentServiceTest(
 
             val comment = CreateCommentCommand(
                 authorId = user.id,
-                postId = post.id,
+                postId = postEntity.id,
                 content = "test"
             )
 
@@ -67,7 +67,7 @@ class CommentServiceTest(
                 userRepository.save(it)
             }
 
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = 1L,
                 title = "title",
                 content = "content"
@@ -78,13 +78,13 @@ class CommentServiceTest(
             (1..5).forEach { i ->
                 Comment(
                     user = user,
-                    postId = post.id,
+                    postId = postEntity.id,
                     content = "Content $i"
                 ).also {
                     commentRepository.save(it)
                 }
             }
-            commentService.getComments(post.id).size shouldBe 5
+            commentService.getComments(postEntity.id).size shouldBe 5
         }
     }
 
@@ -99,7 +99,7 @@ class CommentServiceTest(
                 userRepository.save(it)
             }
 
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = user.id,
                 title = "title",
                 content = "content"
@@ -109,7 +109,7 @@ class CommentServiceTest(
 
             val comment = Comment(
                 user = user,
-                postId = post.id,
+                postId = postEntity.id,
                 content = "test"
             ).also {
                 commentRepository.save(it)
@@ -139,7 +139,7 @@ class CommentServiceTest(
                 userRepository.save(it)
             }
 
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = user1.id,
                 title = "title",
                 content = "content"
@@ -149,7 +149,7 @@ class CommentServiceTest(
 
             val comment = Comment(
                 user = user1,
-                postId = post.id,
+                postId = postEntity.id,
                 content = "test"
             ).also {
                 commentRepository.save(it)
@@ -189,7 +189,7 @@ class CommentServiceTest(
                 userRepository.save(it)
             }
 
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = user.id,
                 title = "title",
                 content = "content"
@@ -199,7 +199,7 @@ class CommentServiceTest(
 
             val comment = Comment(
                 user = user,
-                postId = post.id,
+                postId = postEntity.id,
                 content = "test"
             ).also {
                 commentRepository.save(it)

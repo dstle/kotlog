@@ -50,7 +50,7 @@ class PostServiceTest(
 
     context("게시물 조회") {
         test("게시물 단건 조회 성공") {
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = 2L,
                 title = "게시물 하나를 조회하기 위한 생성",
                 content = "생성한다."
@@ -58,17 +58,17 @@ class PostServiceTest(
                 postRepository.save(it)
             }
 
-            val createdPost = postService.getPost(post.id)
+            val createdPost = postService.getPost(postEntity.id)
 
-            createdPost.id shouldBe post.id
-            createdPost.title shouldBe post.title
-            createdPost.content shouldBe post.content
-            createdPost.authorId shouldBe post.authorId
+            createdPost.id shouldBe postEntity.id
+            createdPost.title shouldBe postEntity.title
+            createdPost.content shouldBe postEntity.content
+            createdPost.authorId shouldBe postEntity.authorId
         }
 
         test("게시물 다건 조회 검색 성공(키워드 X)") {
             (1..15).forEach { i ->
-                val post = Post(
+                val postEntity = PostEntity(
                     authorId = i.toLong(),
                     title = "Title $i",
                     content = "Content $i"
@@ -84,7 +84,7 @@ class PostServiceTest(
 
         test("게시물 다건 조회 검색 성공(키워드 O)") {
             (1..15).forEach { i ->
-                val post = Post(
+                val postEntity = PostEntity(
                     authorId = i.toLong(),
                     title = "Test $i",
                     content = "Content $i"
@@ -94,7 +94,7 @@ class PostServiceTest(
             }
 
             (1..3).forEach { i ->
-                val post = Post(
+                val postEntity = PostEntity(
                     authorId = i.toLong(),
                     title = "Title $i",
                     content = "Content $i"
@@ -115,7 +115,7 @@ class PostServiceTest(
 
     context("게시물 수정") {
         test("게시물 수정 성공") {
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = 1L,
                 title = "게시물 하나",
                 content = "내용"
@@ -123,7 +123,7 @@ class PostServiceTest(
                 postRepository.save(it)
             }
 
-            val response = postService.getPost(post.id)
+            val response = postService.getPost(postEntity.id)
 
             val updatePostCommand = UpdatePostCommand(
                 authorId = 1L,
@@ -140,7 +140,7 @@ class PostServiceTest(
         }
 
         test("작성자가 달라서 수정 실패") {
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = 1L,
                 title = "게시물 하나",
                 content = "내용"
@@ -148,7 +148,7 @@ class PostServiceTest(
                 postRepository.save(it)
             }
 
-            val response = postService.getPost(post.id)
+            val response = postService.getPost(postEntity.id)
 
             val updatePostCommand = UpdatePostCommand(
                 authorId = 2L,
@@ -165,7 +165,7 @@ class PostServiceTest(
 
     context("게시물 삭제") {
         test("게시물 삭제 성공") {
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = 1L,
                 title = "게시물 하나",
                 content = "내용"
@@ -173,7 +173,7 @@ class PostServiceTest(
                 postRepository.save(it)
             }
 
-            val response = postService.getPost(post.id)
+            val response = postService.getPost(postEntity.id)
 
             postService.deletePost(1L, response.id)
 
@@ -183,7 +183,7 @@ class PostServiceTest(
         }
 
         test("게시물 작성자가 달라서 실패") {
-            val post = Post(
+            val postEntity = PostEntity(
                 authorId = 1L,
                 title = "게시물 하나",
                 content = "내용"
@@ -191,7 +191,7 @@ class PostServiceTest(
                 postRepository.save(it)
             }
 
-            val response = postService.getPost(post.id)
+            val response = postService.getPost(postEntity.id)
             val userId = 2L
 
             shouldThrow<IllegalArgumentException> {

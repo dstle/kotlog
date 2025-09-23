@@ -1,27 +1,23 @@
 package com.study.kotlog.domain.post
 
-import com.study.kotlog.domain.BaseEntity
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
+import java.time.ZonedDateTime
 
-@Entity
-@Table(name = "posts")
-class Post(
-    @Column(name = "author_id", nullable = false)
+data class Post (
+    val id: Long,
+    val createdAt: ZonedDateTime,
+    val updatedAt: ZonedDateTime,
     val authorId: Long,
-    @Column(name = "title", nullable = false)
-    var title: String,
-    @Column(name = "content", nullable = false)
-    var content: String,
-) : BaseEntity() {
+    val title: String,
+    val content: String,
+) {
     companion object {
-        fun of(
-            authorId: Long,
-            title: String,
-            content: String,
-        ): Post = Post(authorId, title, content)
+        fun from(entity: PostEntity) = Post(
+            id = entity.id,
+            createdAt = entity.createdAt,
+            updatedAt = entity.updatedAt,
+            authorId = entity.authorId,
+            title = entity.title,
+            content = entity.content,
+        )
     }
-
-    override fun toString(): String = "Post(authorId=$authorId, title='$title', content='$content')"
 }
