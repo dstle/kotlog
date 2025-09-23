@@ -52,40 +52,6 @@ class PostController(
         return ResponseEntity.status(HttpStatus.CREATED).body(PostResponse.from(post))
     }
 
-    @GetMapping("/{postId}")
-    @Operation(
-        summary = "post 단건 조회",
-        description = "postId로 게시물을 가져옵니다.",
-        security = [SecurityRequirement(name = "Bearer Authentication")]
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "게시물 가져오기 성공")
-        ]
-    )
-    fun getPost(@PathVariable postId: Long): ResponseEntity<PostResponse> {
-        val post = postService.getPost(postId)
-
-        return ResponseEntity.status(HttpStatus.OK).body(PostResponse.from(post))
-    }
-
-    @GetMapping("/posts")
-    @Operation(
-        summary = "post 다건 조회",
-        description = "키워드로 게시물을 다건 조회합니다. 기본 값은 최신순 10 개를 가져옵니다.",
-        security = [SecurityRequirement(name = "Bearer Authentication")]
-    )
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "게시물 가져오기 성공")
-        ]
-    )
-    fun getPosts(
-        @RequestParam(required = false) keyword: String?,
-        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC) pageable: Pageable,
-    ): Page<PostResponse> = postService.getPosts(keyword, pageable)
-        .map { PostResponse.from(it) }
-
     @PutMapping("/{postId}")
     @Operation(
         summary = "post 수정",
